@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <!-- configuration parameters -->
+  <meta name="defaultView" content="slideshow" />
+  <meta name="controlVis" content="hidden" />
+  <style type="text/css">
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; background-color: #f8f8f8; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+pre, code { background-color: #f8f8f8; }
+code > span.kw { color: #204a87; font-weight: bold; }
+code > span.dt { color: #204a87; }
+code > span.dv { color: #0000cf; }
+code > span.bn { color: #0000cf; }
+code > span.fl { color: #0000cf; }
+code > span.ch { color: #4e9a06; }
+code > span.st { color: #4e9a06; }
+code > span.co { color: #8f5902; font-style: italic; }
+code > span.ot { color: #8f5902; }
+code > span.al { color: #ef2929; }
+code > span.fu { color: #000000; }
+code > span.er { font-weight: bold; }
+  </style>
+  <!-- style sheet links -->
+  <link rel="stylesheet" href="ui/yatil/slides.css" type="text/css" media="projection" id="slideProj" />
+  <link rel="stylesheet" href="ui/yatil/outline.css" type="text/css" media="screen" id="outlineStyle" />
+  <link rel="stylesheet" href="ui/yatil/print.css" type="text/css" media="print" id="slidePrint" />
+  <link rel="stylesheet" href="ui/yatil/opera.css" type="text/css" media="projection" id="operaFix" />
+  <!-- S5 JS -->
+  <script src="ui/yatil/slides.js" type="text/javascript"></script>
+</head>
+<body>
+<div class="layout">
+<div id="controls"></div>
+<div id="currentSlide"></div>
+<div id="header"></div>
+<div id="footer">
+  <h1></h1>
+  <h2></h2>
+</div>
+</div>
+<div class="presentation">
+<div id="the-reluctant-chef" class="titleslide slide section level1"><h1>The Reluctant Chef</h1></div><div id="who-am-i" class="slide section level2">
+<h1>Who am I?</h1>
+<div class="figure">
+<img src="images/hat.jpg" />
+</div>
+</div><div id="who-am-i-1" class="slide section level2">
+<h1>Who am I?</h1>
+<div class="figure">
+<img src="images/future.jpg" />
+</div>
+</div><div id="whats-this-about" class="slide section level2">
+<h1>What's this about?</h1>
+<div class="figure">
+<img src="images/ops1.jpg" />
+</div>
+</div><div id="whats-this-about-1" class="slide section level2">
+<h1>What's this about?</h1>
+<div class="figure">
+<img src="images/ops2.jpg" />
+</div>
+</div><div id="whats-this-about-2" class="slide section level2">
+<h1>What's this about?</h1>
+<p>The levels of provisioning:</p>
+<ol style="list-style-type: decimal">
+<li>Hand-configured servers</li>
+<li>Cobbled-together provisioning scripts</li>
+<li><code>$DEPLOYMENT_TOOL</code> managing scripts</li>
+<li>Single-server chef/puppet</li>
+<li>Centralised configuration management</li>
+</ol>
+</div><div id="whats-this-about-3" class="slide section level2">
+<h1>What's this about?</h1>
+<p>Stop thinking of deployment as an unspeakable thing that happens to our beautiful code after we've written it, and start thinking of our code as meaningless until it's embodied in a production system.</p>
+<p>not sure about the second bit of that, but work on it</p>
+<p>re tom stuart's point about Rails' deployment story being ghastly:</p>
+<p>Okay, so chef may not buy us simplicity, but it buys us a way of managing complexity. We still need the former, but we can mitigate the latter</p>
+</div><div id="bullets" class="slide section level2">
+<h1>Bullets</h1>
+<ul>
+<li>one</li>
+<li>two</li>
+<li>three</li>
+</ul>
+</div><div id="code" class="slide section level2">
+<h1>Code</h1>
+<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="kw">class</span> <span class="dt">Something</span>
+  <span class="kw">def</span> blah
+    <span class="ot">@thing</span> ||= <span class="st">:symbol</span>
+  <span class="kw">end</span>
+<span class="kw">end</span></code></pre>
+</div>
+</div>
+</body>
+</html>
