@@ -5,6 +5,34 @@ pre, code {
     background-color: #FDF6E3
 }
 
+pre {
+  margin-bottom: 2em;
+}
+
+/* // KeyWordTok */
+/* .sourceCode .kw { color: #268BD2; } */
+/* // DataTypeTok */
+/* .sourceCode .dt { color: #268BD2; } */
+
+/* // DecValTok (decimal value), BaseNTok, FloatTok */
+/* .sourceCode .dv, .sourceCode .bn, .sourceCode .fl { color: #D33682; } */
+/* // CharTok */
+/* .sourceCode .ch { color: #DC322F; } */
+/* // StringTok */
+/* .sourceCode .st { color: #2AA198; } */
+/* // CommentTok */
+/* .sourceCode .co { color: #93A1A1; } */
+/* // OtherTok */
+/* .sourceCode .ot { color: #A57800; } */
+/* // AlertTok */
+/* .sourceCode .al { color: #CB4B16; font-weight: bold; } */
+/* // FunctionTok */
+/* .sourceCode .fu { color: #268BD2; } */
+/* // RegionMarkerTok */
+/* .sourceCode .re { } */
+/* // ErrorTok */
+/* .sourceCode .er { color: #D30102; font-weight: bold; } */
+
 // KeyWordTok
 .sourceCode .kw { color: #268BD2; }
 // DataTypeTok
@@ -28,3 +56,20 @@ pre, code {
 .sourceCode .re { }
 // ErrorTok
 .sourceCode .er { color: #D30102; font-weight: bold; }
+
+div.slide .figure {
+  text-align: center;
+}
+
+li.incremental {
+  /* display: none; */
+  color: #ddd;
+}
+
+p.caption {
+  margin-left: 0;
+}
+
+code {
+  font-family: Consolas, "Source Code Pro", "Monaco for Powerline", monospace;
+}
