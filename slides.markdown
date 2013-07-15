@@ -29,8 +29,8 @@
 ## Why should I care?
 
 * Our responsibility is for **production** behaviour
-* Our **dependencies** alter the meaning of our code
 * "Works on my machine" just doesn't cut it!
+* Our **dependencies** alter the meaning of our code
 
 ## Why should I care?
 
@@ -604,6 +604,16 @@ rails_app "tribesports" do
   hostname "tribesports.com"
   action :create
 end
+```
+
+## Why should we REALLY care?
+
+Or this:
+
+```
+$ vagrant up
+
+$ cap vagrant deploy
 ```
 
 ## Virtual Machines
