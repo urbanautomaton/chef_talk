@@ -525,67 +525,13 @@ vendor/
 $ cap vagrant deploy</code></pre>
 </div><div id="working-with-chef" class="slide section level2">
 <h1>Working with Chef</h1>
-<p>Iterate quickly - virtual machines</p>
-</div><div id="vagrant" class="slide section level2">
-<h1>Vagrant</h1>
-<div class="figure">
-<img src="images/mitchellh.jpg" alt="Mitchell Hashimoto" /><p class="caption">Mitchell Hashimoto</p>
-</div>
-</div><div id="vagrant-1" class="slide section level2">
-<h1>Vagrant</h1>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Vagrantfile</span>
-<span class="dt">Vagrant</span>.configure(<span class="st">&quot;2&quot;</span>) <span class="kw">do</span> |config|
-  config.vm.box     = <span class="st">&quot;precise64&quot;</span>
-  config.vm.box_url = <span class="st">&quot;http://files.vagrantup.com/precise64.box&quot;</span>
-
-  config.vm.network <span class="st">:private_network</span>, <span class="st">:ip</span> =&gt; <span class="fl">10.0</span>.<span class="fl">0.10</span>
-
-  config.vm.provision <span class="st">&quot;chef_solo&quot;</span> <span class="kw">do</span> |chef|
-    chef.cookbooks_path = [<span class="st">&quot;cookbooks&quot;</span>, <span class="st">&quot;vendor/cookbooks&quot;</span>]
-    chef.add_role <span class="st">&quot;database&quot;</span>
-    chef.add_role <span class="st">&quot;redis&quot;</span>
-    chef.add_role <span class="st">&quot;web&quot;</span>
-  <span class="kw">end</span>
-<span class="kw">end</span></code></pre>
-</div><div id="working-with-vagrant" class="slide section level2">
-<h1>Working with Vagrant</h1>
+<p>Iterate quickly</p>
 <ul class="incremental">
 <li>Pick a platform</li>
 <li>Build your own binary packages</li>
+<li>Use vagrant (and cache packages with vagrant-cachier!)</li>
 <li>Package your own boxes</li>
 </ul>
-</div><div id="building-binary-packages" class="slide section level2">
-<h1>Building binary packages</h1>
-<p>Are you kidding?</p>
-</div><div id="building-binary-packages-1" class="slide section level2">
-<h1>Building binary packages</h1>
-<div class="figure">
-<img src="images/jordan_sissel.png" alt="Jordan Sissel" /><p class="caption">Jordan Sissel</p>
-</div>
-</div><div id="building-binary-packages-2" class="slide section level2">
-<h1>Building binary packages</h1>
-<p>fpm - &quot;effing package management&quot;</p>
-<blockquote>
-<p>It helps you build packages quickly and easily (Packages like RPM and DEB formats).</p>
-</blockquote>
-<blockquote>
-<p>Fundamental principle: if fpm is not helping you make packages easily, then there is a bug in fpm.</p>
-</blockquote>
-</div><div id="building-binary-packages-3" class="slide section level2">
-<h1>Building binary packages</h1>
-<p>Examples at:</p>
-<ul class="incremental">
-<li>https://github.com/tribesports/packages</li>
-<li>https://github.com/alphagov/packages</li>
-</ul>
-</div><div id="packaging-boxes" class="slide section level2">
-<h1>Packaging boxes</h1>
-<ol class="incremental" style="list-style-type: decimal">
-<li>Take a base box</li>
-<li>Configure it to a baseline</li>
-<li><code>vagrant package &lt;vm_name&gt;</code></li>
-<li>Upload somewhere convenient</li>
-</ol>
 </div><div id="chef-in-small-steps" class="slide section level2">
 <h1>Chef in small steps</h1>
 <p>One step at a time:</p>

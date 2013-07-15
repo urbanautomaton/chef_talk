@@ -566,68 +566,12 @@ $ cap vagrant deploy
 
 ## Working with Chef
 
-Iterate quickly - virtual machines
-
-## Vagrant
-
-![Mitchell Hashimoto](images/mitchellh.jpg)
-
-## Vagrant
-
-```ruby
-# Vagrantfile
-Vagrant.configure("2") do |config|
-  config.vm.box     = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-
-  config.vm.network :private_network, :ip => 10.0.0.10
-
-  config.vm.provision "chef_solo" do |chef|
-    chef.cookbooks_path = ["cookbooks", "vendor/cookbooks"]
-    chef.add_role "database"
-    chef.add_role "redis"
-    chef.add_role "web"
-  end
-end
-```
-
-## Working with Vagrant
+Iterate quickly
 
 * Pick a platform
 * Build your own binary packages
+* Use vagrant (and cache packages with vagrant-cachier!)
 * Package your own boxes
-
-## Building binary packages
-
-Are you kidding?
-
-## Building binary packages
-
-![Jordan Sissel](images/jordan_sissel.png)
-
-## Building binary packages
-
-fpm - "effing package management"
-
-> It helps you build packages quickly and easily (Packages like RPM and
-> DEB formats).
-
-> Fundamental principle: if fpm is not helping you make packages easily,
-> then there is a bug in fpm.
-
-## Building binary packages
-
-Examples at:
-
-* https://github.com/tribesports/packages
-* https://github.com/alphagov/packages
-
-## Packaging boxes
-
-1. Take a base box
-2. Configure it to a baseline
-3. `vagrant package <vm_name>`
-4. Upload somewhere convenient
 
 ## Chef in small steps
 
