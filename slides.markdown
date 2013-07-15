@@ -616,7 +616,9 @@ $ vagrant up
 $ cap vagrant deploy
 ```
 
-## Virtual Machines
+## Working with Chef
+
+Iterate quickly - virtual machines
 
 ## Virtual Machines
 
@@ -659,16 +661,6 @@ Vagrant.configure("2") do |config|
     s.path "my_provisioning_script.sh"
   end
 end
-```
-
-## Vagrant
-
-From zero to fully deployable virtual env in two lines:
-
-```
-$ vagrant up
-
-$ cd $PROJECT_DIR && cap vagrant deploy
 ```
 
 ## Working with Vagrant
