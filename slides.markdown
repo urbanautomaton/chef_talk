@@ -1,14 +1,8 @@
 # The Reluctant Chef
 
-somehting something something
-
 ## Who am I?
 
 ![](images/hat.jpg)
-
-## Who am I?
-
-![](images/future.jpg)
 
 ## Who am I?
 
@@ -24,27 +18,34 @@ somehting something something
 
 ## What's this about?
 
+![](images/future.jpg)
+
+## What's this about?
+
 * Noddy guide to Chef
 * Introducing config management **gradually**
-* Tools/advice to **simplify the process**
 * Developers! Developers! Developers!
 
 ## Why should I care?
 
-* Our code is only meaningful when **embodied**
+* Our responsibility is for **production** behaviour
 * Our **dependencies** alter the meaning of our code
-* Our responsibility is for **production** performance
 * "Works on my machine" just doesn't cut it!
+
+## Why should I care?
+
+```
+# /etc/my.cnf
+
+speak_swedish             = no
+silently_truncate_strings = no
+```
 
 ## This sounds boring!
 
 * Ops **can** be like programming
 * Playing with VMs is **really cool**
 * Maybe we can set up our laptops? 
-
-## This sounds boring!
-
-![](images/vm_tweet.png)
 
 ## Chef overview
 
@@ -59,8 +60,8 @@ Okay, so what does a Chef run actually do?
 Components:
 
 * **Ohai** - examines existing configuration
-* **Knife** - manages server objects: cookbooks, nodes, data bags
 * **Chef Server** - aggregates node information, dishes out cookbooks
+* **Knife** - manages server objects: cookbooks, nodes, data bags
 * **Chef Client** - receives info. from server, applies changes
 * **Chef Solo** - standalone client, uses only local info
 
@@ -87,10 +88,10 @@ The gems of the Chef world:
 
 ## Workstation cookbook
 
-1. Build-essentials (gcc etc.)
+1. Build-essentials
 2. Git
-3. Package manager (homebrew)
-4. Ruby environment (switcher + install manager)
+3. Package manager
+4. Ruby environment
 5. MySQL
 
 ## Workstation cookbook
@@ -186,6 +187,7 @@ Chef's main unit of abstraction
 * **template** - creates a file with interpolated values
 * **package** - installs a software package
 * **erl_call** - a connection to a node within a distributed Erlang system
+* and many more...
 
 ## Creating a lightweight resource
 
@@ -212,8 +214,6 @@ default_action :install
 attribute :repo,      :kind_of => String, :name_attribute => true
 attribute :branch,    :kind_of => String, :default => "master"
 attribute :installer, :kind_of => String, :default => "install.sh"
-
-attr_accessor :exists
 ```
 
 ## Creating a lightweight resource
@@ -245,12 +245,36 @@ And finally, the helper methods:
 ```ruby
 # providers/repo.rb
 
+def repo_exists?
+  ::File.exists?(::File.expand_path("~/dotfiles"))
+end
+
+def dotfiles_installed?
+  installed_cmd = <<-EOS
+    cd ~/dotfiles && \
+    if [ -f ".installed_version" ]; then
+      cat .installed_version;
+    fi
+  EOS
+  latest_cmd = "cd ~/dotfiles && git rev-parse HEAD"
+  `#{installed_cmd}`.strip == `#{latest_cmd}`.strip
+end
+```
+
+## Creating a lightweight resource
+
+And finally, the helper methods:
+
+```ruby
+# providers/repo.rb
+
 def clone_repo
   execute "Clone dotfiles repo" do
     command <<-EOS
       cd ~ && \
       git clone #{new_resource.repo} dotfiles && \
       cd dotfiles && \
+      git checkout -B deploy && \
       git reset --hard origin/#{new_resource.branch}
     EOS
   end
@@ -269,7 +293,7 @@ def update_repo
     command <<-EOS
       cd ~/dotfiles && \
       git fetch origin && \
-      git checkout #{new_resource.branch} && \
+      git checkout -B deploy && \
       git reset --hard origin/#{new_resource.branch}
     EOS
   end
@@ -283,7 +307,7 @@ And finally, the helper methods:
 ```ruby
 # providers/repo.rb
 
-def run_installer
+def run_installer!
   execute "Install dotfiles" do
     command <<-EOS
       cd ~/dotfiles && \
@@ -291,29 +315,6 @@ def run_installer
       git rev-parse HEAD > .installed_version
     EOS
   end
-end
-```
-
-## Creating a lightweight resource
-
-And finally, the helper methods:
-
-```ruby
-# providers/repo.rb
-
-def repo_exists?
-  ::File.exists?(::File.expand_path("~/dotfiles"))
-end
-
-def dotfiles_installed?
-  installed_cmd = <<-EOS
-    cd ~/dotfiles && \
-    if [ -f ".installed_version" ]; then
-      cat .installed_version;
-    fi
-  EOS
-  latest_cmd = "cd ~/dotfiles && git rev-parse HEAD"
-  `#{installed_cmd}`.strip == `#{latest_cmd}`.strip
 end
 ```
 
@@ -332,7 +333,7 @@ include_recipe "mysql"
 package "chruby"
 package "ruby-install"
 
-dotfiles "https://github.com/urbanautomaton/dotfiles"
+dotfiles node['workstation']['dotfiles_repo']
 ```
 
 ## From cookbooks to kitchen
@@ -342,6 +343,7 @@ Okay, so how do we apply this?
 * What recipes get run?
 * Where do our cookbooks live?
 * Where do our dependencies come from?
+* Where do we set machine-specific attributes?
 
 ## The kitchen repo
 
@@ -356,13 +358,23 @@ cookbooks/
   - workstation/
 data_bags/
 nodes/
-  - workstation.json
 roles/
 vendor/
   - cookbooks/
-    - git/
-    - mysql/
-    - # etc.
+```
+
+## The node definition
+
+Primary input to Chef Solo
+
+```javascript
+// nodes/workstation.json
+{
+  "name": "workstation",
+  "run_list": [
+    "recipe[workstation]"
+  ]
+}
 ```
 
 ## The node definition
@@ -376,7 +388,29 @@ Primary input to Chef Solo
   "run_list": [
     "recipe[workstation]"
   ],
-  "attributes" {
+  "attributes": {
+    "workstation: {
+      "dotfiles_repo": "https://github.com/urbanautomaton/dotfiles"
+    }
+  }
+}
+```
+
+## The node definition
+
+Primary input to Chef Solo
+
+```javascript
+// nodes/workstation.json
+{
+  "name": "workstation",
+  "run_list": [
+    "recipe[workstation]"
+  ],
+  "attributes": {
+    "workstation: {
+      "dotfiles_repo": "https://github.com/urbanautomaton/dotfiles"
+    },
     "mysql": {
       "tunable": {
         "innodb_buffer_pool_size": "512M"
@@ -434,12 +468,75 @@ cookbook "mysql"
 $ berks install --path=vendor/cookbooks
 ```
 
+## The kitchen repo
+
+```
+Gemfile
+Berksfile
+.chef/
+  - knife.rb
+  - solo.rb
+certificates/
+cookbooks/
+  - workstation/
+data_bags/
+nodes/
+  - workstation.json
+roles/
+vendor/
+  - cookbooks/
+    - git/
+    - mysql/
+    - # etc.
+```
+
+## The Chef Run
+
+```
+$ chef-solo -c .chef/solo.rb -j nodes/workstation.json
+```
+
+## The Chef Run
+
+```ruby
+[
+  "workstation"
+]
+```
+
+## The Chef Run
+
+```ruby
+{
+  "workstation" => [
+      "build-essentials",
+      "homebrew",
+      "git",
+      "mysql",
+    ]
+}
+```
+
+## The Chef Run
+
+```ruby
+{
+  "workstation" => {
+      "build-essentials" => [...],
+      "homebrew"         => [...],
+      "git"              => [...],
+      "mysql"            => [...],
+    }
+}
+```
+
 ## Ready to go!
 
 * Get your shiny new Macbook
 * Set the correct permissions on `/usr/local/`
 * Clone your kitchen repo with git
 * Bundle install the required gems
+* Install a build toolchain so the gems can install
 * Uh...
 * Bugger.
 
@@ -448,6 +545,7 @@ $ berks install --path=vendor/cookbooks
 * Chef is a gem
 * It requires ruby
 * Its dependencies require a build toolchain
+* Your cookbooks **might** work with OSX system ruby
 * So... what's the point?
 
 ## Bait and switch!
@@ -459,13 +557,225 @@ $ berks install --path=vendor/cookbooks
 
 ## Colours to the mast
 
-* Chef will not make setting up your laptop fun
-* Chef will not eliminate the germs that may cause bad breath
-* Chef **will** put you in the driver's seat
+Chef will not make setting up your laptop fun
 
 ## Why should we REALLY care?
 
 * Improve your development tools
+* Work with your **real** dependencies
 * Stop using development mode!
 
+## Why should we REALLY care?
 
+* Ruby deployment is ghastly
+* Abstract the setup of an app
+
+## Why should we REALLY care?
+
+Imagine if we could do this:
+
+```ruby
+rails_app "tribesports" do
+  hostname "tribesports.com"
+  action :create
+end
+```
+
+## Virtual Machines
+
+## Virtual Machines
+
+![](images/vm_tweet.png)
+
+## Vagrant
+
+![](images/mitchellh.jpg)
+
+## Vagrant
+
+```ruby
+# Vagrantfile
+Vagrant.configure("2") do |config|
+  config.vm.box     = "precise64"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+
+  config.vm.network :private_network, :ip => 10.0.0.10
+
+  config.vm.provision "chef_solo" do |chef|
+    chef.cookbooks_path = ["cookbooks", "vendor/cookbooks"]
+    chef.add_role "database"
+    chef.add_role "redis"
+    chef.add_role "web"
+  end
+end
+```
+
+## Vagrant
+
+```ruby
+# Vagrantfile
+Vagrant.configure("2") do |config|
+  config.vm.box     = "precise64"
+  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
+
+  config.vm.network :private_network, :ip => 10.0.0.10
+
+  config.vm.provision "shell" do |s|
+    s.path "my_provisioning_script.sh"
+  end
+end
+```
+
+## Vagrant
+
+From zero to fully deployable virtual env in two lines:
+
+```
+$ vagrant up
+
+$ cd $PROJECT_DIR && cap vagrant deploy
+```
+
+## Working with Vagrant
+
+* Pick a platform
+* Build your own binary packages
+* Package your own boxes
+* Cache packages with vagrant-cachier
+
+## Packaging boxes
+
+1. Take a base box
+2. Configure it to a baseline
+3. `vagrant package <vm_name>`
+
+## Packaging boxes
+
+![](images/mitchellh.jpg)
+
+## Packaging boxes
+
+packer.io
+
+> Packer is a tool for creating identical machine images for multiple
+> platforms from a single source configuration.
+
+## Building binary packages
+
+![](images/jordan_sissel.png)
+
+## Building binary packages
+
+fpm - "effing package management"
+
+> It helps you build packages quickly and easily (Packages like RPM and
+> DEB formats).
+
+> Fundamental principle: if fpm is not helping you make packages easily,
+> then there is a bug in fpm.
+
+## Building binary packages
+
+1. Script containing your usual compilation steps
+2. `$ make install DESTDIR=installdir`
+3. `$ fpm -s dir -t deb -n <package_name> -C installdir`
+
+## Building binary packages
+
+Examples at:
+
+* https://github.com/tribesports/packages
+* https://github.com/alphagov/packages
+
+## Chef in small steps
+
+One step at a time:
+
+* Configure your user accounts
+* Configure sshd and other security
+* Install apache
+* Set up your deploy directory
+* etc. and so forth
+
+## Chef in small steps
+
+Chef Solo gets you a **very** long way
+
+* No live remote node info
+* No environments
+
+## Chef in small steps
+
+Provisioning multi-box setups with Chef Solo
+
+```
+nodes/
+  - db_master.json
+  - db_slave.json
+  - web1.json
+  - web2.json
+  - worker.json
+```
+
+## Chef in small steps
+
+https://github.com/edelight/chef-solo-search
+
+```
+# recipes/db_master.rb
+search(:node, "role:web") do |n|
+  ip = n['ip_address']
+  # poke hole in firewall
+  # add database account
+end
+```
+
+## Working with Chef
+
+## Working with Chef
+
+Is it really programming?
+
+* Honking great global attributes hash
+* Spooky action at a distance
+* Feels like scripting
+
+## Working with Chef
+
+Increasing use of abstraction
+
+* Resources / definitions
+* Client code more explicit
+* Reduced coupling
+* More composable, extendable
+
+## Working with Chef
+
+Community cookbooks
+
+* Quality varies
+* Contributing is a pain
+* But so is forking
+* Gems like chef-rewind allow tweaking
+
+## Wrapping up
+
+Pros:
+
+* Repeatability
+* Testability
+* Abstraction / reduce cognitive load
+* Control of dependencies
+* Better development tools
+
+## Wrapping up
+
+Cons:
+
+* Learning curve
+* Bootstrapping can be a pain
+* External dependencies - trust the cookbooks?
+
+## Thank you!
+
+Questions?
