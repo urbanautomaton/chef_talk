@@ -22,8 +22,8 @@
 
 ## What's this about?
 
-* Noddy guide to Chef
 * Introducing config management **gradually**
+* Benefits to small teams
 * Developers! Developers! Developers!
 
 ## Why should I care?
@@ -33,6 +33,8 @@
 * "Works on my machine" just doesn't cut it!
 
 ## Why should I care?
+
+How is your database configured?
 
 ```
 # /etc/my.cnf
@@ -60,7 +62,7 @@ Okay, so what does a Chef run actually do?
 Components:
 
 * **Ohai** - examines existing configuration
-* **Chef Server** - aggregates node information, dishes out cookbooks
+* **Chef Server** - aggregates node info, dishes out cookbooks, roles
 * **Knife** - manages server objects: cookbooks, nodes, data bags
 * **Chef Client** - receives info. from server, applies changes
 * **Chef Solo** - standalone client, uses only local info
@@ -84,9 +86,12 @@ The gems of the Chef world:
 * Attributes
 * Files & Templates
 * Custom resources / definitions
+* Libraries
 * Recipes
 
 ## Workstation cookbook
+
+Let's set up an OSX laptop:
 
 1. Build-essentials
 2. Git
@@ -96,12 +101,24 @@ The gems of the Chef world:
 
 ## Workstation cookbook
 
+```
+README.md
+attributes/
+  - default.rb
+metadata.rb
+recipes/
+  - default.rb
+```
+
+## Workstation cookbook
+
 ```ruby
 # recipes/default.rb
 include_recipe "build-essential"
 include_recipe "homebrew"
 include_recipe "git"
-include_recipe "mysql"
+include_recipe "mysql::client"
+include_recipe "mysql::server"
 
 package "chruby" do
   action :install
@@ -138,7 +155,8 @@ depends "mysql",            "~> 2.1.0"
 include_recipe "build-essential"
 include_recipe "homebrew"
 include_recipe "git"
-include_recipe "mysql"
+include_recipe "mysql::client"
+include_recipe "mysql::server"
 
 package "chruby" do
   action :install
@@ -155,10 +173,21 @@ We want to customise some MySQL configuration details:
 
 ```ruby
 # attributes/default.rb
+# speak_swedish = no
 normal['mysql']['tunable']['character-set-server'] = 'utf8mb4'
 normal['mysql']['tunable']['collation-server']     = 'utf8mb4_col'
-normal['mysql']['tunable']['log_bin']              = false
+# silently_truncate_strings = no
 normal['mysql']['tunable']['sql_mode']             = 'STRICT_TRANS_TABLES'
+```
+
+## Workstation cookbook
+
+```ruby
+# my.cnf.erb
+character-set-server = <%= node['mysql']['character-set-server'] %>
+pid-file             = <%= node['mysql']['pid_file'] %>
+basedir              = <%= node['mysql']['basedir'] %>
+datadir              = <%= node['mysql']['data_dir'] %>
 ```
 
 ## Workstation cookbook
@@ -168,7 +197,8 @@ normal['mysql']['tunable']['sql_mode']             = 'STRICT_TRANS_TABLES'
 include_recipe "build-essential"
 include_recipe "homebrew"
 include_recipe "git"
-include_recipe "mysql"
+include_recipe "mysql::client"
+include_recipe "mysql::server"
 
 package "chruby" do
   action :install
@@ -181,7 +211,7 @@ end
 
 ## Chef Resources
 
-Chef's main unit of abstraction
+Chef's basic unit of abstraction
 
 * **file** - creates a file
 * **template** - creates a file with interpolated values
@@ -224,16 +254,65 @@ Then we define its (sole) action:
 # providers/dotfiles.rb
 
 action :install do
-  if !repo_exists?
-    clone_repo!
-  else
-    update_repo!
-  end
+  clone_repo! unless repo_exists?
+  update_repo!
 
   if dotfiles_installed?
     Chef::Log.info("Dotfiles up to date - skipping install.")
   else
     run_installer!
+  end
+end
+```
+
+## Creating a lightweight resource
+
+And finally, the helper methods:
+
+```ruby
+# providers/repo.rb
+
+def clone_repo
+  execute "Clone dotfiles repo" do
+    cwd "~"
+    command "git clone #{new_resource.repo} dotfiles"
+  end
+end
+```
+
+## Creating a lightweight resource
+
+And finally, the helper methods:
+
+```ruby
+# providers/repo.rb
+
+def update_repo
+  execute "Update dotfiles repo" do
+    cwd "~/dotfiles"
+    command <<-EOS
+      git fetch origin && \
+      git checkout -B deploy && \
+      git reset --hard origin/#{new_resource.branch}
+    EOS
+  end
+end
+```
+
+## Creating a lightweight resource
+
+And finally, the helper methods:
+
+```ruby
+# providers/repo.rb
+
+def run_installer!
+  execute "Install dotfiles" do
+    cwd "~/dotfiles"
+    command <<-EOS
+      ./#{new_resource.installer} && \
+      git rev-parse HEAD > .installed_version
+    EOS
   end
 end
 ```
@@ -261,79 +340,25 @@ def dotfiles_installed?
 end
 ```
 
-## Creating a lightweight resource
-
-And finally, the helper methods:
-
-```ruby
-# providers/repo.rb
-
-def clone_repo
-  execute "Clone dotfiles repo" do
-    command <<-EOS
-      cd ~ && \
-      git clone #{new_resource.repo} dotfiles && \
-      cd dotfiles && \
-      git checkout -B deploy && \
-      git reset --hard origin/#{new_resource.branch}
-    EOS
-  end
-end
-```
-
-## Creating a lightweight resource
-
-And finally, the helper methods:
-
-```ruby
-# providers/repo.rb
-
-def update_repo
-  execute "Update dotfiles repo" do
-    command <<-EOS
-      cd ~/dotfiles && \
-      git fetch origin && \
-      git checkout -B deploy && \
-      git reset --hard origin/#{new_resource.branch}
-    EOS
-  end
-end
-```
-
-## Creating a lightweight resource
-
-And finally, the helper methods:
-
-```ruby
-# providers/repo.rb
-
-def run_installer!
-  execute "Install dotfiles" do
-    command <<-EOS
-      cd ~/dotfiles && \
-      ./#{new_resource.installer} && \
-      git rev-parse HEAD > .installed_version
-    EOS
-  end
-end
-```
-
 ## Back to our cookbook
 
 ```ruby
-#
-# Cookbook Name:: workstation
-# Recipe:: default
-
 include_recipe "build-essential"
 include_recipe "homebrew"
 include_recipe "git"
 include_recipe "mysql"
 
-package "chruby"
-package "ruby-install"
+package "chruby" do
+  action :install
+end
 
-dotfiles node['workstation']['dotfiles_repo']
+package "ruby-install" do
+  action :install
+end
+
+dotfiles node['workstation']['dotfiles_repo'] do
+  action :install
+end
 ```
 
 ## From cookbooks to kitchen
