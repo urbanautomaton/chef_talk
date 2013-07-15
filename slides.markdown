@@ -596,14 +596,6 @@ end
 * Pick a platform
 * Build your own binary packages
 * Package your own boxes
-* Cache packages with vagrant-cachier
-
-## Packaging boxes
-
-1. Take a base box
-2. Configure it to a baseline
-3. `vagrant package <vm_name>`
-4. Upload somewhere convenient
 
 ## Building binary packages
 
@@ -629,6 +621,13 @@ Examples at:
 
 * https://github.com/tribesports/packages
 * https://github.com/alphagov/packages
+
+## Packaging boxes
+
+1. Take a base box
+2. Configure it to a baseline
+3. `vagrant package <vm_name>`
+4. Upload somewhere convenient
 
 ## Chef in small steps
 
