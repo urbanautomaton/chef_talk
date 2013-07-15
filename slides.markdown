@@ -2,11 +2,7 @@
 
 ## Who am I?
 
-![](images/hat.jpg)
-
-## Who am I?
-
-![](images/desk.jpg)
+![Simon Coffey - @urbanautomaton](images/hat.jpg)
 
 ## What's this about?
 
@@ -374,16 +370,12 @@ Okay, so how do we apply this?
 
 ```
 Gemfile
-Berksfile
 .chef/
   - knife.rb
   - solo.rb
-certificates/
 cookbooks/
   - workstation/
-data_bags/
 nodes/
-roles/
 vendor/
   - cookbooks/
 ```
@@ -501,13 +493,10 @@ Berksfile
 .chef/
   - knife.rb
   - solo.rb
-certificates/
 cookbooks/
   - workstation/
-data_bags/
 nodes/
   - workstation.json
-roles/
 vendor/
   - cookbooks/
     - git/
@@ -519,40 +508,6 @@ vendor/
 
 ```
 $ chef-solo -c .chef/solo.rb -j nodes/workstation.json
-```
-
-## The Chef Run
-
-```ruby
-[
-  "workstation"
-]
-```
-
-## The Chef Run
-
-```ruby
-{
-  "workstation" => [
-      "build-essentials",
-      "homebrew",
-      "git",
-      "mysql",
-    ]
-}
-```
-
-## The Chef Run
-
-```ruby
-{
-  "workstation" => {
-      "build-essentials" => [...],
-      "homebrew"         => [...],
-      "git"              => [...],
-      "mysql"            => [...],
-    }
-}
 ```
 
 ## Ready to go!
@@ -580,18 +535,10 @@ $ chef-solo -c .chef/solo.rb -j nodes/workstation.json
 * Reusability
 * 14 lines of bash?
 
-## Colours to the mast
-
-Chef will not make setting up your laptop fun
-
 ## Why should we REALLY care?
 
 * Improve your development tools
 * Work with your **real** dependencies
-* Stop using development mode!
-
-## Why should we REALLY care?
-
 * Ruby deployment is ghastly
 * Abstract the setup of an app
 
@@ -647,22 +594,6 @@ Vagrant.configure("2") do |config|
 end
 ```
 
-## Vagrant
-
-```ruby
-# Vagrantfile
-Vagrant.configure("2") do |config|
-  config.vm.box     = "precise64"
-  config.vm.box_url = "http://files.vagrantup.com/precise64.box"
-
-  config.vm.network :private_network, :ip => 10.0.0.10
-
-  config.vm.provision "shell" do |s|
-    s.path "my_provisioning_script.sh"
-  end
-end
-```
-
 ## Working with Vagrant
 
 * Pick a platform
@@ -703,12 +634,6 @@ fpm - "effing package management"
 
 ## Building binary packages
 
-1. Script containing your usual compilation steps
-2. `$ make install DESTDIR=installdir`
-3. `$ fpm -s dir -t deb -n <package_name> -C installdir`
-
-## Building binary packages
-
 Examples at:
 
 * https://github.com/tribesports/packages
@@ -730,10 +655,10 @@ Chef Solo gets you a **very** long way
 
 * No live remote node info
 * No environments
+* Simulate it with node definitions!
+* Search with chef-solo-search
 
 ## Chef in small steps
-
-Provisioning multi-box setups with Chef Solo
 
 ```
 nodes/
@@ -750,26 +675,18 @@ https://github.com/edelight/chef-solo-search
 
 ```
 # recipes/db_master.rb
+
+# For each web server...
 search(:node, "role:web") do |n|
   ip = n['ip_address']
-  # poke hole in firewall
-  # add database account
+  # ...poke hole in firewall...
+  # ...add database account...
 end
 ```
 
 ## Working with Chef
 
-## Working with Chef
-
-Is it really programming?
-
-* Honking great global attributes hash
-* Spooky action at a distance
-* Feels like scripting
-
-## Working with Chef
-
-Increasing use of abstraction
+Is it programming? Increasing use of abstraction
 
 * Resources / definitions
 * Client code more explicit
@@ -783,7 +700,6 @@ Community cookbooks
 * Quality varies
 * Contributing is a pain
 * But so is forking
-* Gems like chef-rewind allow tweaking
 
 ## Wrapping up
 

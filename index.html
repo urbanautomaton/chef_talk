@@ -50,12 +50,7 @@ code > span.er { color: #ff0000; font-weight: bold; }
 <div id="the-reluctant-chef" class="titleslide slide section level1"><h1>The Reluctant Chef</h1></div><div id="who-am-i" class="slide section level2">
 <h1>Who am I?</h1>
 <div class="figure">
-<img src="images/hat.jpg" />
-</div>
-</div><div id="who-am-i-1" class="slide section level2">
-<h1>Who am I?</h1>
-<div class="figure">
-<img src="images/desk.jpg" />
+<img src="images/hat.jpg" alt="Simon Coffey - @urbanautomaton" /><p class="caption">Simon Coffey - @urbanautomaton</p>
 </div>
 </div><div id="whats-this-about" class="slide section level2">
 <h1>What's this about?</h1>
@@ -373,16 +368,12 @@ dotfiles node[<span class="st">&#39;workstation&#39;</span>][<span class="st">&#
 </div><div id="the-kitchen-repo" class="slide section level2">
 <h1>The kitchen repo</h1>
 <pre><code>Gemfile
-Berksfile
 .chef/
   - knife.rb
   - solo.rb
-certificates/
 cookbooks/
   - workstation/
-data_bags/
 nodes/
-roles/
 vendor/
   - cookbooks/</code></pre>
 </div><div id="the-node-definition" class="slide section level2">
@@ -470,13 +461,10 @@ Berksfile
 .chef/
   - knife.rb
   - solo.rb
-certificates/
 cookbooks/
   - workstation/
-data_bags/
 nodes/
   - workstation.json
-roles/
 vendor/
   - cookbooks/
     - git/
@@ -485,31 +473,6 @@ vendor/
 </div><div id="the-chef-run" class="slide section level2">
 <h1>The Chef Run</h1>
 <pre><code>$ chef-solo -c .chef/solo.rb -j nodes/workstation.json</code></pre>
-</div><div id="the-chef-run-1" class="slide section level2">
-<h1>The Chef Run</h1>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">[
-  <span class="st">&quot;workstation&quot;</span>
-]</code></pre>
-</div><div id="the-chef-run-2" class="slide section level2">
-<h1>The Chef Run</h1>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">{
-  <span class="st">&quot;workstation&quot;</span> =&gt; [
-      <span class="st">&quot;build-essentials&quot;</span>,
-      <span class="st">&quot;homebrew&quot;</span>,
-      <span class="st">&quot;git&quot;</span>,
-      <span class="st">&quot;mysql&quot;</span>,
-    ]
-}</code></pre>
-</div><div id="the-chef-run-3" class="slide section level2">
-<h1>The Chef Run</h1>
-<pre class="sourceCode ruby"><code class="sourceCode ruby">{
-  <span class="st">&quot;workstation&quot;</span> =&gt; {
-      <span class="st">&quot;build-essentials&quot;</span> =&gt; [...],
-      <span class="st">&quot;homebrew&quot;</span>         =&gt; [...],
-      <span class="st">&quot;git&quot;</span>              =&gt; [...],
-      <span class="st">&quot;mysql&quot;</span>            =&gt; [...],
-    }
-}</code></pre>
 </div><div id="ready-to-go" class="slide section level2">
 <h1>Ready to go!</h1>
 <ul class="incremental">
@@ -538,30 +501,22 @@ vendor/
 <li>Reusability</li>
 <li>14 lines of bash?</li>
 </ul>
-</div><div id="colours-to-the-mast" class="slide section level2">
-<h1>Colours to the mast</h1>
-<p>Chef will not make setting up your laptop fun</p>
 </div><div id="why-should-we-really-care" class="slide section level2">
 <h1>Why should we REALLY care?</h1>
 <ul class="incremental">
 <li>Improve your development tools</li>
 <li>Work with your <strong>real</strong> dependencies</li>
-<li>Stop using development mode!</li>
-</ul>
-</div><div id="why-should-we-really-care-1" class="slide section level2">
-<h1>Why should we REALLY care?</h1>
-<ul class="incremental">
 <li>Ruby deployment is ghastly</li>
 <li>Abstract the setup of an app</li>
 </ul>
-</div><div id="why-should-we-really-care-2" class="slide section level2">
+</div><div id="why-should-we-really-care-1" class="slide section level2">
 <h1>Why should we REALLY care?</h1>
 <p>Imagine if we could do this:</p>
 <pre class="sourceCode ruby"><code class="sourceCode ruby">rails_app <span class="st">&quot;tribesports&quot;</span> <span class="kw">do</span>
   hostname <span class="st">&quot;tribesports.com&quot;</span>
   action <span class="st">:create</span>
 <span class="kw">end</span></code></pre>
-</div><div id="why-should-we-really-care-3" class="slide section level2">
+</div><div id="why-should-we-really-care-2" class="slide section level2">
 <h1>Why should we REALLY care?</h1>
 <p>Or this:</p>
 <pre><code>$ vagrant up
@@ -594,19 +549,6 @@ $ cap vagrant deploy</code></pre>
     chef.add_role <span class="st">&quot;database&quot;</span>
     chef.add_role <span class="st">&quot;redis&quot;</span>
     chef.add_role <span class="st">&quot;web&quot;</span>
-  <span class="kw">end</span>
-<span class="kw">end</span></code></pre>
-</div><div id="vagrant-2" class="slide section level2">
-<h1>Vagrant</h1>
-<pre class="sourceCode ruby"><code class="sourceCode ruby"><span class="co"># Vagrantfile</span>
-<span class="dt">Vagrant</span>.configure(<span class="st">&quot;2&quot;</span>) <span class="kw">do</span> |config|
-  config.vm.box     = <span class="st">&quot;precise64&quot;</span>
-  config.vm.box_url = <span class="st">&quot;http://files.vagrantup.com/precise64.box&quot;</span>
-
-  config.vm.network <span class="st">:private_network</span>, <span class="st">:ip</span> =&gt; <span class="fl">10.0</span>.<span class="fl">0.10</span>
-
-  config.vm.provision <span class="st">&quot;shell&quot;</span> <span class="kw">do</span> |s|
-    s.path <span class="st">&quot;my_provisioning_script.sh&quot;</span>
   <span class="kw">end</span>
 <span class="kw">end</span></code></pre>
 </div><div id="working-with-vagrant" class="slide section level2">
@@ -651,13 +593,6 @@ $ cap vagrant deploy</code></pre>
 </blockquote>
 </div><div id="building-binary-packages-2" class="slide section level2">
 <h1>Building binary packages</h1>
-<ol class="incremental" style="list-style-type: decimal">
-<li>Script containing your usual compilation steps</li>
-<li><code>$ make install DESTDIR=installdir</code></li>
-<li><code>$ fpm -s dir -t deb -n &lt;package_name&gt; -C installdir</code></li>
-</ol>
-</div><div id="building-binary-packages-3" class="slide section level2">
-<h1>Building binary packages</h1>
 <p>Examples at:</p>
 <ul class="incremental">
 <li>https://github.com/tribesports/packages</li>
@@ -679,10 +614,11 @@ $ cap vagrant deploy</code></pre>
 <ul class="incremental">
 <li>No live remote node info</li>
 <li>No environments</li>
+<li>Simulate it with node definitions!</li>
+<li>Search with chef-solo-search</li>
 </ul>
 </div><div id="chef-in-small-steps-2" class="slide section level2">
 <h1>Chef in small steps</h1>
-<p>Provisioning multi-box setups with Chef Solo</p>
 <pre><code>nodes/
   - db_master.json
   - db_slave.json
@@ -693,38 +629,29 @@ $ cap vagrant deploy</code></pre>
 <h1>Chef in small steps</h1>
 <p>https://github.com/edelight/chef-solo-search</p>
 <pre><code># recipes/db_master.rb
+
+# For each web server...
 search(:node, &quot;role:web&quot;) do |n|
   ip = n[&#39;ip_address&#39;]
-  # poke hole in firewall
-  # add database account
+  # ...poke hole in firewall...
+  # ...add database account...
 end</code></pre>
 </div><div id="working-with-chef-1" class="slide section level2">
 <h1>Working with Chef</h1>
-</div><div id="working-with-chef-2" class="slide section level2">
-<h1>Working with Chef</h1>
-<p>Is it really programming?</p>
-<ul class="incremental">
-<li>Honking great global attributes hash</li>
-<li>Spooky action at a distance</li>
-<li>Feels like scripting</li>
-</ul>
-</div><div id="working-with-chef-3" class="slide section level2">
-<h1>Working with Chef</h1>
-<p>Increasing use of abstraction</p>
+<p>Is it programming? Increasing use of abstraction</p>
 <ul class="incremental">
 <li>Resources / definitions</li>
 <li>Client code more explicit</li>
 <li>Reduced coupling</li>
 <li>More composable, extendable</li>
 </ul>
-</div><div id="working-with-chef-4" class="slide section level2">
+</div><div id="working-with-chef-2" class="slide section level2">
 <h1>Working with Chef</h1>
 <p>Community cookbooks</p>
 <ul class="incremental">
 <li>Quality varies</li>
 <li>Contributing is a pain</li>
 <li>But so is forking</li>
-<li>Gems like chef-rewind allow tweaking</li>
 </ul>
 </div><div id="wrapping-up" class="slide section level2">
 <h1>Wrapping up</h1>
