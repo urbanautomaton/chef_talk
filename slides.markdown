@@ -549,6 +549,7 @@ Imagine if we could do this:
 ```ruby
 rails_app "tribesports" do
   hostname "tribesports.com"
+  deploy_dir "/var/www/vhtdocs/tribesports"
   action :create
 end
 ```
@@ -567,13 +568,9 @@ $ cap vagrant deploy
 
 Iterate quickly - virtual machines
 
-## Virtual Machines
-
-![](images/vm_tweet.png)
-
 ## Vagrant
 
-![](images/mitchellh.jpg)
+![Mitchell Hashimoto](images/mitchellh.jpg)
 
 ## Vagrant
 
@@ -606,21 +603,15 @@ end
 1. Take a base box
 2. Configure it to a baseline
 3. `vagrant package <vm_name>`
-
-## Packaging boxes
-
-![](images/mitchellh.jpg)
-
-## Packaging boxes
-
-packer.io
-
-> Packer is a tool for creating identical machine images for multiple
-> platforms from a single source configuration.
+4. Upload somewhere convenient
 
 ## Building binary packages
 
-![](images/jordan_sissel.png)
+Are you kidding?
+
+## Building binary packages
+
+![Jordan Sissel](images/jordan_sissel.png)
 
 ## Building binary packages
 

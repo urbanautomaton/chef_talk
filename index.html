@@ -514,6 +514,7 @@ vendor/
 <p>Imagine if we could do this:</p>
 <pre class="sourceCode ruby"><code class="sourceCode ruby">rails_app <span class="st">&quot;tribesports&quot;</span> <span class="kw">do</span>
   hostname <span class="st">&quot;tribesports.com&quot;</span>
+  deploy_dir <span class="st">&quot;/var/www/vhtdocs/tribesports&quot;</span>
   action <span class="st">:create</span>
 <span class="kw">end</span></code></pre>
 </div><div id="why-should-we-really-care-2" class="slide section level2">
@@ -525,15 +526,10 @@ $ cap vagrant deploy</code></pre>
 </div><div id="working-with-chef" class="slide section level2">
 <h1>Working with Chef</h1>
 <p>Iterate quickly - virtual machines</p>
-</div><div id="virtual-machines" class="slide section level2">
-<h1>Virtual Machines</h1>
-<div class="figure">
-<img src="images/vm_tweet.png" />
-</div>
 </div><div id="vagrant" class="slide section level2">
 <h1>Vagrant</h1>
 <div class="figure">
-<img src="images/mitchellh.jpg" />
+<img src="images/mitchellh.jpg" alt="Mitchell Hashimoto" /><p class="caption">Mitchell Hashimoto</p>
 </div>
 </div><div id="vagrant-1" class="slide section level2">
 <h1>Vagrant</h1>
@@ -565,24 +561,17 @@ $ cap vagrant deploy</code></pre>
 <li>Take a base box</li>
 <li>Configure it to a baseline</li>
 <li><code>vagrant package &lt;vm_name&gt;</code></li>
+<li>Upload somewhere convenient</li>
 </ol>
-</div><div id="packaging-boxes-1" class="slide section level2">
-<h1>Packaging boxes</h1>
-<div class="figure">
-<img src="images/mitchellh.jpg" />
-</div>
-</div><div id="packaging-boxes-2" class="slide section level2">
-<h1>Packaging boxes</h1>
-<p>packer.io</p>
-<blockquote>
-<p>Packer is a tool for creating identical machine images for multiple platforms from a single source configuration.</p>
-</blockquote>
 </div><div id="building-binary-packages" class="slide section level2">
 <h1>Building binary packages</h1>
-<div class="figure">
-<img src="images/jordan_sissel.png" />
-</div>
+<p>Are you kidding?</p>
 </div><div id="building-binary-packages-1" class="slide section level2">
+<h1>Building binary packages</h1>
+<div class="figure">
+<img src="images/jordan_sissel.png" alt="Jordan Sissel" /><p class="caption">Jordan Sissel</p>
+</div>
+</div><div id="building-binary-packages-2" class="slide section level2">
 <h1>Building binary packages</h1>
 <p>fpm - &quot;effing package management&quot;</p>
 <blockquote>
@@ -591,7 +580,7 @@ $ cap vagrant deploy</code></pre>
 <blockquote>
 <p>Fundamental principle: if fpm is not helping you make packages easily, then there is a bug in fpm.</p>
 </blockquote>
-</div><div id="building-binary-packages-2" class="slide section level2">
+</div><div id="building-binary-packages-3" class="slide section level2">
 <h1>Building binary packages</h1>
 <p>Examples at:</p>
 <ul class="incremental">
